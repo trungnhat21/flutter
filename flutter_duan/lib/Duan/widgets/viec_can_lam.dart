@@ -28,7 +28,7 @@ class LichCaNhan extends StatelessWidget {
             )),
             SizedBox(height: 10,),
             Padding(
-              padding: const EdgeInsets.only(left: 30),
+              padding: EdgeInsets.only(left: 30),
               child: Icon(Icons.checklist_rtl, size: 50, color: Colors.red,),
             ),
           ],

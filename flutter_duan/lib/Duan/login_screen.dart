@@ -52,44 +52,54 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Đăng nhập / Đăng ký', style: TextStyle(color: Colors.white)), backgroundColor: Colors.blue),
+      appBar: AppBar(title: Center(child: Text('Đăng nhập / Đăng ký', style: TextStyle(color: Colors.white))), backgroundColor: Colors.blue),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 350, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 500, vertical: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  'https://png.pngtree.com/png-vector/20191110/ourmid/pngtree-avatar-icon-profile-icon-member-login-vector-isolated-png-image_1978396.jpg',
+                  width: 250,
+                  height: 230,
+                  fit: BoxFit.cover,
+                ),
+              ),
               TextField(
                 controller: _emailController, 
-                decoration: const InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: 'Email', border: OutlineInputBorder()),
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               TextField(
                 controller: _passwordController, 
-                decoration: const InputDecoration(labelText: 'Mật khẩu', border: OutlineInputBorder()),
+                decoration: InputDecoration(labelText: 'Mật khẩu', border: OutlineInputBorder()),
                 obscureText: true,
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: 30),
               
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     onPressed: () => _signInOrSignUp(isLogin: true),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green, padding: const EdgeInsets.symmetric(horizontal: 30)),
-                    child: const Text('Đăng nhập', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green, padding: EdgeInsets.symmetric(horizontal: 30)),
+                    child: Text('Đăng nhập', style: TextStyle(color: Colors.white)),
                   ),
                   ElevatedButton(
                     onPressed: () => _signInOrSignUp(isLogin: false),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: const EdgeInsets.symmetric(horizontal: 30)),
-                    child: const Text('Đăng ký', style: TextStyle(color: Colors.white)),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: EdgeInsets.symmetric(horizontal: 30)),
+                    child: Text('Đăng ký', style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(_message, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+              SizedBox(height: 20),
+              Text(_message, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
             ],
           ),
         ),

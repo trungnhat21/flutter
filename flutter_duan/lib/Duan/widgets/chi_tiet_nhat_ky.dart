@@ -115,95 +115,122 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      appBar: AppBar(title: const Text("Viết nhật ký"), backgroundColor: Colors.grey
+      appBar: AppBar(title: const Text("Viết nhật ký"), backgroundColor: Colors.grey,
+      automaticallyImplyLeading: false,
       ),
       body: Container(
-        color: const Color.fromARGB(255, 215, 214, 214),
+        color: Color.fromARGB(255, 215, 214, 214),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 400, right: 400, top: 20),
+          padding: EdgeInsets.only(left: 400, right: 250, top: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: _chonNgay,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blueGrey.shade200, width: 1.5),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _ngayChonController.text,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold, 
-                          fontSize: 18, 
-                          color: Colors.blueGrey
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        InkWell(
+                          onTap: _chonNgay,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.blueGrey.shade200, width: 1.5),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  _ngayChonController.text,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.blueGrey,
+                                  ),
+                                ),
+                                Icon(Icons.calendar_today, color: Colors.blueGrey),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      const Icon(Icons.calendar_today, color: Colors.blueGrey),
-                    ],
+                        
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: _noiDungController,
+                          maxLines: 6, 
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Nội dung nhật ký',
+                            labelStyle: TextStyle(color: Colors.blueGrey),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 50), 
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      'https://png.pngtree.com/element_our/20190528/ourmid/pngtree-journal-icon-image_1131447.jpg',
+                      width: 250,
+                      height: 230,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: EdgeInsets.only(right: 300),
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: _luuNhatKy,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueGrey,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Text('Thêm nhật ký', style: TextStyle(fontSize: 16)),
                   ),
                 ),
               ),
-              
-              const SizedBox(height: 20),
-              
-              TextField(
-                controller: _noiDungController,
-                maxLines: 5,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Nội dung nhật ký',
-                  labelStyle: TextStyle(color: Colors.blueGrey),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: _luuNhatKy,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueGrey,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  child: const Text('Thêm nhật ký', style: TextStyle(fontSize: 16)),
-                ),
-              ),
-              const SizedBox(height: 30),
-              const Text(
+                SizedBox(height: 30),
+                Text(
                 'Danh sách nhật ký:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Column(
                 children: _nhatkyList.map((nhatky) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    child: ListTile(
-                      leading: const Icon(Icons.note, color: Colors.blueGrey),
-                      title: Text(
-                        nhatky['tieuDe']!,
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-                      ),
-                      subtitle: Text(
-                        nhatky['noiDung']!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          setState(() {
-                            _nhatkyList.remove(nhatky);
-                          });
-                        },
+                  return Padding(
+                    padding: EdgeInsets.only(right: 300),
+                    child: Card(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      child: ListTile(
+                        leading: Icon(Icons.note, color: Colors.blueGrey),
+                        title: Text(
+                          nhatky['tieuDe']!,
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+                        ),
+                        subtitle: Text(
+                          nhatky['noiDung']!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            setState(() {
+                              _nhatkyList.remove(nhatky);
+                            });
+                          },
+                        ),
                       ),
                     ),
                   );

@@ -26,7 +26,7 @@ class _ThoiGianLamViecState extends State<ThoiGianLamViec> {
       _resetTimer();
     }
     
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_currentTime > 0) {
         setState(() {
           _currentTime--;
@@ -74,9 +74,9 @@ class _ThoiGianLamViecState extends State<ThoiGianLamViec> {
         children: [
           Text(
             _displayTime,
-            style: const TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 233, 227, 227)),
+            style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 233, 227, 227)),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -87,18 +87,18 @@ class _ThoiGianLamViecState extends State<ThoiGianLamViec> {
                 child: Icon(_isRunning ? Icons.pause : Icons.play_arrow, color: Colors.white),
               ),
 
-              const SizedBox(width: 20),
+              SizedBox(width: 20),
               FloatingActionButton(
                 heroTag: 'fabReset',
                 onPressed: _resetTimer,
                 backgroundColor: Colors.red,
-                child: const Icon(Icons.refresh, color: Colors.white),
+                child: Icon(Icons.refresh, color: Colors.white),
               ),
             ],
           ),
           
-          const SizedBox(height: 10),
-          const Text(
+          SizedBox(height: 10),
+          Text(
             "Phiên làm việc: 30 phút",
             style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 185, 177, 177),
                 shadows: [
