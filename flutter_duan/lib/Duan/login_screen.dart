@@ -63,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  'https://png.pngtree.com/png-vector/20191110/ourmid/pngtree-avatar-icon-profile-icon-member-login-vector-isolated-png-image_1978396.jpg',
+                child: Image.asset(
+                  'images/anh12.jpg',
                   width: 250,
                   height: 230,
                   fit: BoxFit.cover,

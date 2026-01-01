@@ -31,7 +31,7 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Thêm ghi chú"), backgroundColor: Colors.grey,
+      appBar: AppBar(title: Center(child: Text("Thêm ghi chú")), backgroundColor: Colors.grey,
       automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -76,7 +76,7 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
-                      image: NetworkImage('https://media.istockphoto.com/id/882917690/vi/vec-to/b%C3%BAt-ch%C3%AC-c%C3%B3-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-gi%E1%BA%A5y.jpg?s=612x612&w=0&k=20&c=6BMvvuIiNrNCY3Pin_q_r0uLHXk14ny_p2KdHk0cl6Y='),
+                      image: AssetImage('images/anh9.jpg'),
                       fit: BoxFit.cover,
                     ),
                   ),

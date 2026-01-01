@@ -27,7 +27,7 @@ class _ChiTietViecState extends State<ChiTietViec> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Công việc cần làm"), backgroundColor: Colors.grey,
+      appBar: AppBar(title: Center(child: Text("Công việc cần làm")), backgroundColor: Colors.grey,
       automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -65,8 +65,8 @@ class _ChiTietViecState extends State<ChiTietViec> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        'https://png.pngtree.com/png-clipart/20190614/original/pngtree-workplace-line-black-icon-png-image_3767709.jpg',
+                      child: Image.asset(
+                        'images/anh11.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),

@@ -115,7 +115,7 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      appBar: AppBar(title: const Text("Viết nhật ký"), backgroundColor: Colors.grey,
+      appBar: AppBar(title: Center(child: Text("Viết nhật ký")), backgroundColor: Colors.grey,
       automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -172,8 +172,8 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                   SizedBox(width: 50), 
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      'https://png.pngtree.com/element_our/20190528/ourmid/pngtree-journal-icon-image_1131447.jpg',
+                    child: Image.asset(
+                      'images/anh10.jpg',
                       width: 250,
                       height: 230,
                       fit: BoxFit.cover,
