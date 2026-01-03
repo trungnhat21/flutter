@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 class NoteApp extends StatelessWidget {
   const NoteApp({super.key});
 
@@ -6,7 +9,7 @@ class NoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.blueGrey),
-      locale: const Locale('en'), 
+      locale: const Locale('en'),
       supportedLocales: const [
         Locale('vi'),
         Locale('en'),
@@ -25,10 +28,35 @@ class ChiTietNhatKy extends StatefulWidget {
 
 class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
   final TextEditingController _noiDungController = TextEditingController();
-  
   late TextEditingController _ngayChonController;
-  DateTime _ngayChon = DateTime.now(); 
-  final List<Map<String, String>> _nhatkyList = [];
+  DateTime _ngayChon = DateTime.now();
+  List<Map<String, String>> _nhatkyList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _ngayChonController = TextEditingController(text: _formatDate(_ngayChon));
+    _loadNhatKy();
+  }
+
+  Future<void> _saveNhatKy() async {
+    final prefs = await SharedPreferences.getInstance();
+    String encodedData = jsonEncode(_nhatkyList); 
+    await prefs.setString('key_nhat_ky', encodedData);
+  }
+
+  Future<void> _loadNhatKy() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? encodedData = prefs.getString('key_nhat_ky');
+    if (encodedData != null) {
+      setState(() {
+        _nhatkyList = List<Map<String, String>>.from(
+          jsonDecode(encodedData).map((item) => Map<String, String>.from(item)),
+        );
+      });
+    }
+  }
+
   String _formatDate(DateTime date) {
     String day = date.day.toString().padLeft(2, '0');
     String month = date.month.toString().padLeft(2, '0');
@@ -41,13 +69,6 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
     String minute = dateTime.minute.toString().padLeft(2, '0');
     return '$hour:$minute - ${_formatDate(dateTime)}';
   }
-  @override
-  void initState() {
-    super.initState();
-    _ngayChonController = TextEditingController(
-      text: _formatDate(_ngayChon),
-    );
-  }
 
   @override
   void dispose() {
@@ -55,28 +76,28 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
     _noiDungController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _chonNgay() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _ngayChon,
-      firstDate: DateTime(2000), 
-      lastDate: DateTime(2101), 
-      locale: const Locale('en'), 
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+      locale: const Locale('en'),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Colors.blueGrey, 
-              onPrimary: Colors.white, 
-              onSurface: Colors.black, 
+              primary: Colors.blueGrey,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
             ),
           ),
           child: child!,
         );
       },
     );
-    
+
     if (picked != null && picked != _ngayChon) {
       setState(() {
         _ngayChon = picked;
@@ -87,39 +108,36 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
 
   void _luuNhatKy() {
     final String noiDung = _noiDungController.text.trim();
-    
-    final DateTime thoiGianLuu = DateTime(
-      _ngayChon.year,
-      _ngayChon.month,
-      _ngayChon.day,
-      DateTime.now().hour,
-      DateTime.now().minute,
-      DateTime.now().second,
-    );
-    final String tieuDe = _formatDateTimeTitle(thoiGianLuu);
-
     if (noiDung.isNotEmpty) {
+      final DateTime thoiGianLuu = DateTime(
+        _ngayChon.year, _ngayChon.month, _ngayChon.day,
+        DateTime.now().hour, DateTime.now().minute, DateTime.now().second,
+      );
+      final String tieuDe = _formatDateTimeTitle(thoiGianLuu);
+
       setState(() {
-        _nhatkyList.add({
-          'tieuDe': tieuDe, 
+        _nhatkyList.insert(0, {
+          'tieuDe': tieuDe,
           'noiDung': noiDung,
         });
         _noiDungController.clear();
         _ngayChon = DateTime.now();
         _ngayChonController.text = _formatDate(_ngayChon);
       });
+      _saveNhatKy();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-      appBar: AppBar(title: Center(child: Text("Viết nhật ký")), backgroundColor: Colors.grey,
-      automaticallyImplyLeading: false,
+      appBar: AppBar(
+        title: Center(child: Text("Viết nhật ký")),
+        backgroundColor: Colors.grey,
+        automaticallyImplyLeading: false,
       ),
       body: Container(
-        color: Color.fromARGB(255, 215, 214, 214),
+        color: const Color.fromARGB(255, 215, 214, 214),
         child: SingleChildScrollView(
           padding: EdgeInsets.only(left: 400, right: 250, top: 20),
           child: Column(
@@ -134,7 +152,7 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                         InkWell(
                           onTap: _chonNgay,
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.blueGrey.shade200, width: 1.5),
                               borderRadius: BorderRadius.circular(8),
@@ -155,12 +173,11 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                             ),
                           ),
                         ),
-                        
                         SizedBox(height: 20),
                         TextField(
                           controller: _noiDungController,
-                          maxLines: 6, 
-                          decoration: InputDecoration(
+                          maxLines: 6,
+                          decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Nội dung nhật ký',
                             labelStyle: TextStyle(color: Colors.blueGrey),
@@ -169,7 +186,7 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 50), 
+                  SizedBox(width: 50),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
@@ -177,6 +194,10 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                       width: 250,
                       height: 230,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 250, height: 230, color: Colors.white,
+                        child: Icon(Icons.broken_image, size: 50),
+                      ),
                     ),
                   ),
                 ],
@@ -198,18 +219,18 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                   ),
                 ),
               ),
-                SizedBox(height: 30),
-                Text(
+              SizedBox(height: 30),
+              Text(
                 'Danh sách nhật ký:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Column(
                 children: _nhatkyList.map((nhatky) {
                   return Padding(
                     padding: EdgeInsets.only(right: 300),
                     child: Card(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      margin: EdgeInsets.symmetric(vertical: 6),
                       elevation: 2,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       child: ListTile(
@@ -229,6 +250,7 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                             setState(() {
                               _nhatkyList.remove(nhatky);
                             });
+                            _saveNhatKy();
                           },
                         ),
                       ),

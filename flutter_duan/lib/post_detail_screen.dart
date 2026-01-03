@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// 💡 QUAN TRỌNG: Cần thêm package url_launcher vào pubspec.yaml
 import 'package:url_launcher/url_launcher.dart'; 
 import 'Baitap/model/post_model.dart'; 
 
