@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChiTietViec extends StatefulWidget {
   const ChiTietViec({super.key});
@@ -13,28 +14,44 @@ class _ChiTietViecState extends State<ChiTietViec> {
   final TextEditingController _noiDungController = TextEditingController();
   List<Map<String, String>> _vieclamList = [];
 
+  String _getSmartKey(String baseKey) {
+    final user = FirebaseAuth.instance.currentUser;
+    String identifier = user?.email ?? "khach"; 
+    return "${identifier}_$baseKey";
+  }
+
   @override
   void initState() {
-    super.initState();
-    _loadData();
-  }
+  super.initState();
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+      _loadData();
+    }
+  });
+}
 
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
-    String? data = prefs.getString('key_viec_lam');
-    if (data != null) {
-      setState(() {
+    String smartKey = _getSmartKey('key_viec_lam');
+    String? data = prefs.getString(smartKey);
+    
+    setState(() {
+      if (data != null) {
         _vieclamList = List<Map<String, String>>.from(
           jsonDecode(data).map((item) => Map<String, String>.from(item)),
         );
-      });
-    }
+      } else {
+        _vieclamList = [];
+      }
+    });
   }
 
   Future<void> _saveData() async {
     final prefs = await SharedPreferences.getInstance();
+    String smartKey = _getSmartKey('key_viec_lam');
+    
     String encodedData = jsonEncode(_vieclamList);
-    await prefs.setString('key_viec_lam', encodedData);
+    await prefs.setString(smartKey, encodedData);
   }
 
   void _themvieclam() {
@@ -130,12 +147,12 @@ class _ChiTietViecState extends State<ChiTietViec> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
-              const Text(
-                'Danh sách việc cần làm:',
+              SizedBox(height: 30),
+              Text(
+                'Danh sách việc cần làm của bạn:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Column(
                 children: _vieclamList.map((vieclam) {
                   return Padding(
@@ -143,7 +160,7 @@ class _ChiTietViecState extends State<ChiTietViec> {
                     child: Card(
                       margin: EdgeInsets.symmetric(vertical: 6),
                       child: ListTile(
-                        leading: Icon(Icons.check_circle_outline, color: Colors.green),
+                        leading: const Icon(Icons.check_circle_outline, color: Colors.green),
                         title: Text(
                           'Việc cần làm',
                           style: TextStyle(fontWeight: FontWeight.bold),

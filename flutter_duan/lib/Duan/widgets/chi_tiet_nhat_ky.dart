@@ -1,23 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class NoteApp extends StatelessWidget {
-  const NoteApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blueGrey),
-      locale: const Locale('en'),
-      supportedLocales: const [
-        Locale('vi'),
-        Locale('en'),
-      ],
-      home: const ChiTietNhatKy(),
-    );
-  }
-}
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChiTietNhatKy extends StatefulWidget {
   const ChiTietNhatKy({super.key});
@@ -32,29 +16,45 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
   DateTime _ngayChon = DateTime.now();
   List<Map<String, String>> _nhatkyList = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _ngayChonController = TextEditingController(text: _formatDate(_ngayChon));
-    _loadNhatKy();
+  String _getSmartKey(String baseKey) {
+    final user = FirebaseAuth.instance.currentUser;
+    String identifier = user?.email ?? "khach";
+    return "${identifier}_$baseKey";
   }
+
+  @override
+  @override
+void initState() {
+  super.initState();
+    _ngayChonController = TextEditingController(text: _formatDate(_ngayChon));
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+      _loadNhatKy(); 
+    }
+  });
+}
 
   Future<void> _saveNhatKy() async {
     final prefs = await SharedPreferences.getInstance();
+    String smartKey = _getSmartKey('key_nhat_ky'); 
     String encodedData = jsonEncode(_nhatkyList); 
-    await prefs.setString('key_nhat_ky', encodedData);
+    await prefs.setString(smartKey, encodedData);
   }
 
   Future<void> _loadNhatKy() async {
     final prefs = await SharedPreferences.getInstance();
-    String? encodedData = prefs.getString('key_nhat_ky');
-    if (encodedData != null) {
-      setState(() {
+    String smartKey = _getSmartKey('key_nhat_ky');
+    String? encodedData = prefs.getString(smartKey);
+    
+    setState(() {
+      if (encodedData != null) {
         _nhatkyList = List<Map<String, String>>.from(
           jsonDecode(encodedData).map((item) => Map<String, String>.from(item)),
         );
-      });
-    }
+      } else {
+        _nhatkyList = [];
+      }
+    });
   }
 
   String _formatDate(DateTime date) {
@@ -152,8 +152,9 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                         InkWell(
                           onTap: _chonNgay,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             decoration: BoxDecoration(
+                              color: Colors.white,
                               border: Border.all(color: Colors.blueGrey.shade200, width: 1.5),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -178,6 +179,8 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
                           controller: _noiDungController,
                           maxLines: 6,
                           decoration: const InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
                             border: OutlineInputBorder(),
                             labelText: 'Nội dung nhật ký',
                             labelStyle: TextStyle(color: Colors.blueGrey),
@@ -221,10 +224,10 @@ class _ChiTietNhatKyState extends State<ChiTietNhatKy> {
               ),
               SizedBox(height: 30),
               Text(
-                'Danh sách nhật ký:',
+                'Danh sách nhật ký của bạn:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10),
               Column(
                 children: _nhatkyList.map((nhatky) {
                   return Padding(

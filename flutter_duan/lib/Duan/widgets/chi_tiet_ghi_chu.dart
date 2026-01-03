@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
-
 
 class ChiTietGhiChu extends StatefulWidget {
   const ChiTietGhiChu({super.key});
@@ -16,28 +16,43 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
 
   List<Map<String, String>> _ghiChuList = [];
 
+  String _getSmartKey(String baseKey) {
+    final user = FirebaseAuth.instance.currentUser;
+    String identifier = user?.email ?? "khach";
+    return "${identifier}_$baseKey";
+  }
+
   @override
   void initState() {
-    super.initState();
-    _loadGhiChuTuMay();
-  }
+  super.initState();
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+      _loadGhiChuTuMay();
+    }
+  });
+}
 
   Future<void> _loadGhiChuTuMay() async {
     final prefs = await SharedPreferences.getInstance();
-    String? data = prefs.getString('key_ghi_chu');
+    String smartKey = _getSmartKey('key_ghi_chu');
+    String? data = prefs.getString(smartKey);
     
-    if (data != null && data.isNotEmpty) {
-      setState(() {
+    setState(() {
+      if (data != null && data.isNotEmpty) {
         Iterable decoded = jsonDecode(data);
         _ghiChuList = decoded.map((item) => Map<String, String>.from(item)).toList();
-      });
-    }
+      } else {
+        _ghiChuList = [];
+      }
+    });
   }
 
   Future<void> _saveGhiChuXuongMay() async {
     final prefs = await SharedPreferences.getInstance();
+    String smartKey = _getSmartKey('key_ghi_chu');
+    
     String encodedData = jsonEncode(_ghiChuList); 
-    await prefs.setString('key_ghi_chu', encodedData); 
+    await prefs.setString(smartKey, encodedData); 
   }
 
   void _luuGhiChu() {
@@ -55,7 +70,7 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
       });
       _saveGhiChuXuongMay(); 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Ghi chú đã được lưu")),
+        const SnackBar(content: Text("Ghi chú đã được lưu vào tài khoản này")),
       );
     }
   }
@@ -64,14 +79,14 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
     setState(() {
       _ghiChuList.removeAt(index);
     });
-    _saveGhiChuXuongMay();
+    _saveGhiChuXuongMay(); 
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Thêm ghi chú")),
+        title: const Center(child: Text("Thêm ghi chú")),
         backgroundColor: Colors.grey,
         automaticallyImplyLeading: false,
       ),
@@ -93,6 +108,8 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Tiêu đề',
+                            fillColor: Colors.white,
+                            filled: true,
                           ),
                         ),
                         SizedBox(height: 20),
@@ -102,6 +119,8 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Nội dung ghi chú',
+                            fillColor: Colors.white,
+                            filled: true,
                           ),
                         ),
                       ],
@@ -124,11 +143,12 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _luuGhiChu,
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey, foregroundColor: Colors.white),
                 child: const Text('Lưu ghi chú'),
               ),
               SizedBox(height: 30),
               Text(
-                'Danh sách ghi chú (Vĩnh viễn):',
+                'Danh sách ghi chú của bạn:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
