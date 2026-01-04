@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_duan/Duan/widgets/chi_tieu.dart'; 
 import 'firebase_options.dart'; 
 import 'auth_gate.dart'; 
 import 'widgets/thoi_gian_lam_viec.dart';
@@ -86,6 +87,13 @@ class HomeScreen extends StatelessWidget {
           title: 'Công việc cần làm',
           imagePath: 'images/anh8.jpg',
           widget: LichCaNhan(), 
+        ),
+        SizedBox(height: 20,),
+        
+        _buildModuleContainer(
+          title: 'Chi tiêu cá nhân',
+          imagePath: 'images/anh13.jpg',
+          widget: ChiTieuCard(), 
         ),
         SizedBox(height: 20,),
       ],

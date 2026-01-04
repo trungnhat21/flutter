@@ -69,9 +69,6 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
         _noiDungController.clear();
       });
       _saveGhiChuXuongMay(); 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Ghi chú đã được lưu vào tài khoản này")),
-      );
     }
   }
 
@@ -86,7 +83,7 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text("Thêm ghi chú")),
+        title: Center(child: Text("Thêm ghi chú")),
         backgroundColor: Colors.grey,
         automaticallyImplyLeading: false,
       ),
@@ -141,10 +138,13 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
                 ],
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _luuGhiChu,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey, foregroundColor: Colors.white),
-                child: const Text('Lưu ghi chú'),
+              Padding(
+                padding: EdgeInsets.only(left: 545),
+                child: ElevatedButton(
+                  onPressed: _luuGhiChu,
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey, foregroundColor: Colors.white),
+                  child: Text('Lưu ghi chú'),
+                ),
               ),
               SizedBox(height: 30),
               Text(
