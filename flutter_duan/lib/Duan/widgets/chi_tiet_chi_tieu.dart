@@ -10,11 +10,37 @@ class ChiTietChiTieu extends StatefulWidget {
   @override
   State<ChiTietChiTieu> createState() => _ChiTietChiTieuState();
 }
+
 class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
   final TextEditingController _tenDoController = TextEditingController();
   final TextEditingController _giaTienController = TextEditingController();
   List<Map<String, String>> _spendingList = [];
   int _soDuHienTai = 0;
+
+  void _hienThongBaoHetTien() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Colors.red, size: 30),
+              SizedBox(width: 10),
+              Text("Cảnh báo chi tiêu"),
+            ],
+          ),
+          content: const Text("Số tiền chi tiêu này đã vượt quá ngân sách ban đầu của bạn!"),
+          actions: [
+            TextButton(
+              child: Text("ĐÃ HIỂU", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold)),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   String _getSmartKey(String baseKey) {
     final user = FirebaseAuth.instance.currentUser;
@@ -32,6 +58,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
       }
     });
   }
+
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
     String smartKey = _getSmartKey('key_chi_tieu');
@@ -69,6 +96,10 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
     int? gia = int.tryParse(giaText);
 
     if (ten.isNotEmpty && gia != null) {
+      if (gia > _soDuHienTai) {
+        _hienThongBaoHetTien();
+      }
+
       setState(() {
         _spendingList.add({'ten': ten, 'gia': giaText});
         _soDuHienTai -= gia;
@@ -92,7 +123,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Chi tiêu ngắn hạn")),
+        title: const Center(child: Text("Chi tiêu ngắn hạn")),
         backgroundColor: Colors.grey,
         automaticallyImplyLeading: false,
       ),
@@ -118,13 +149,17 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
                       style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 13)),
                     SizedBox(height: 8),
                     Text("$_soDuHienTai VNĐ", 
-                      style: TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                        color: _soDuHienTai < 0 ? Colors.redAccent : Colors.white, 
+                        fontSize: 35, 
+                        fontWeight: FontWeight.bold
+                      )),
                   ],
                 ),
               ),
               SizedBox(height: 25),
               Container(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -140,7 +175,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
                         border: UnderlineInputBorder(),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     TextField(
                       controller: _giaTienController,
                       keyboardType: TextInputType.number,
@@ -150,7 +185,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
                         border: UnderlineInputBorder(),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _themChiTieu,
                       style: ElevatedButton.styleFrom(
@@ -174,7 +209,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
                   int index = entry.key;
                   var item = entry.value;
                   return Container(
-                    margin: EdgeInsets.only(bottom: 12),
+                    margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
