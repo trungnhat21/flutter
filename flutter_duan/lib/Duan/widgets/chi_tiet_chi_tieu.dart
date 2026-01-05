@@ -92,7 +92,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Chi tiêu cá nhân")),
+        title: Center(child: Text("Chi tiêu ngắn hạn")),
         backgroundColor: Colors.grey,
         automaticallyImplyLeading: false,
       ),
