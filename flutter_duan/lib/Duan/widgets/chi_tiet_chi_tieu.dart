@@ -30,7 +30,7 @@ class _ChiTietChiTieuState extends State<ChiTietChiTieu> {
               Text("Cảnh báo chi tiêu"),
             ],
           ),
-          content: const Text("Số tiền chi tiêu này đã vượt quá ngân sách ban đầu của bạn!"),
+          content: const Text("Số tiền chi tiêu này đã vượt quá ngân sách ban đầu!"),
           actions: [
             TextButton(
               child: Text("ĐÃ HIỂU", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.bold)),

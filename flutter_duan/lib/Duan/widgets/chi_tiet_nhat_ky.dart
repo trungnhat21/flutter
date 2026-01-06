@@ -224,7 +224,7 @@ void initState() {
               ),
               SizedBox(height: 30),
               Text(
-                'Danh sách nhật ký của bạn:',
+                'Danh sách nhật ký:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
               SizedBox(height: 10),

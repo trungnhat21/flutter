@@ -149,7 +149,7 @@ class _ChiTietViecState extends State<ChiTietViec> {
               ),
               SizedBox(height: 30),
               Text(
-                'Danh sách việc cần làm của bạn:',
+                'Danh sách việc cần làm:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),

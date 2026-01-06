@@ -148,7 +148,7 @@ class _ChiTietGhiChuState extends State<ChiTietGhiChu> {
               ),
               SizedBox(height: 30),
               Text(
-                'Danh sách ghi chú của bạn:',
+                'Danh sách ghi chú:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
